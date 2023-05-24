@@ -1,0 +1,44 @@
+@import '../../styles/variables';
+
+.header {
+  background-color: $black;
+  padding: 20px 0;
+
+  &__styles {
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__cart {
+    width: 50px;
+    height: 50px;
+    position: relative;
+  }
+
+  &__cart-img {
+    width: 50px;
+  }
+
+  &__cart-total {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: -5px;
+    left: 40px;
+    font-size: 15px;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    background-color: #6495ed7d;
+  }
+}
+
+.sum {
+  color: crimson;
+  font-size: 20px;
+  font-weight: bold;
+}
