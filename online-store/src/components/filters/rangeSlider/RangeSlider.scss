@@ -1,0 +1,8 @@
+@import '../../../styles/variables';
+
+.range-slider {
+  &__marks{
+    display: flex;
+    justify-content: space-between;
+  }
+}

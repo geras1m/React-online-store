@@ -8,7 +8,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-
   const handleLogin = (email, password) => {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)

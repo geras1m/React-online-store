@@ -13,7 +13,9 @@ const HomePage = () => {
       <h1>Welcome</h1>
       <button
         onClick={()=> dispatch(removeUser())}
-      >Log out from {email}</button>
+      >
+        Log out from {email}
+      </button>
     </div>
   ) : (
       <Navigate to='/login'/>
