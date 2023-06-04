@@ -1,58 +1,58 @@
-import RangeSlider from "./rangeSlider/RangeSlider";
 import {useDispatch, useSelector} from "react-redux";
 import {useSearchParams} from "react-router-dom";
 import {useEffect} from "react";
-import {updateQueryParams, updateValueRangeSliderPrice} from "../../slices/productSlice";
 import {minAndMaxValueFromArray} from "../../utils/utils";
+import Range from "rc-slider";
+import 'rc-slider/assets/index.css';
+import './SliderRangeDual.scss';
 
-const SliderRangeDual = ({title}) => {
+const SliderRangeDual = ({title, step, typeOfCategory, setMinAndMaxLimitOfValueRangeSliderInState, updateMinValueRangeSliderInState, updateMaxValueRangeSliderInState}) => {
   const dispatch = useDispatch();
-  const {products, filteredProducts, checkedFilterPrice} = useSelector(state => state.products);
+  const {products} = useSelector(state => state.products);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const price = searchParams.get('price');
+  const urlSearchParams = searchParams.get(typeOfCategory);
+  const minAndMaxValueFromUrlSearchParams = urlSearchParams?.split('to').map(el => Number(el));
 
-  //http://localhost:3000/?brands=Apple%E2%86%95Samsung%E2%86%95Huawei&price=300to1000
+  const minAndMaxValueFromAllProducts = minAndMaxValueFromArray(products, typeOfCategory)
+    .map(el => isFinite(el) ? el : 0);
 
   useEffect(() => {
-    if (price) {
-      const values = price.split('to').map(el => Number(el));
-      dispatch(updateValueRangeSliderPrice(values));
-    } else {
-      const arrMinMaxDefaultValues = minAndMaxValueFromArray(products);
-      dispatch(updateValueRangeSliderPrice(arrMinMaxDefaultValues));
-    }
+    let value = urlSearchParams ? minAndMaxValueFromUrlSearchParams : minAndMaxValueFromAllProducts;
+    dispatch(setMinAndMaxLimitOfValueRangeSliderInState(minAndMaxValueFromAllProducts))
+    dispatch(updateMinValueRangeSliderInState(value[0]));
+    dispatch(updateMaxValueRangeSliderInState(value[1]));
   }, [products]);
 
-  const arrMinMaxDefaultValues = minAndMaxValueFromArray(products);
+  const handleChangePrice = (value) => {
+    searchParams.set(typeOfCategory, value.join('to'));
+    setSearchParams(searchParams);
 
-  const handleChangePrice = (values) => {
-    searchParams.set('price', values.join('to'))
-    setSearchParams(searchParams)
-    dispatch(updateValueRangeSliderPrice(values));
+    dispatch(updateMinValueRangeSliderInState(value[0]));
+    dispatch(updateMaxValueRangeSliderInState(value[1]));
   };
 
-// если есть в query, используем иначе min и max
-
-  const getDefaultValue = () => {
-    if (checkedFilterPrice) {
-      return checkedFilterPrice
-    }else if(price){
-      return price.split('to').map(el => Number(el));
-    }else{
-      return arrMinMaxDefaultValues
-    }
-  }
+  const minCurrentValue = urlSearchParams ? minAndMaxValueFromUrlSearchParams[0] : minAndMaxValueFromAllProducts[0];
+  const maxCurrentValue = urlSearchParams ? minAndMaxValueFromUrlSearchParams[1] : minAndMaxValueFromAllProducts[1];
 
   return (
     <div>
       <h3 className='filters__title'>{title}</h3>
-      <RangeSlider
-        min={arrMinMaxDefaultValues[0]}
-        max={arrMinMaxDefaultValues[1]}
-        defaultValues={getDefaultValue()}
-        handleChangePrice={handleChangePrice}
+      <Range
+        className='range-slider'
+        range
+        onChange={handleChangePrice}
+        min={minAndMaxValueFromAllProducts[0]}
+        max={minAndMaxValueFromAllProducts[1]}
+        step={step}
+        value={[minCurrentValue, maxCurrentValue]}
+        allowCross={false}
+        trackStyle={{backgroundColor: "black"}}
       />
+      <div
+        className='range-slider__marks'>
+        <span>{minCurrentValue}</span><span>{maxCurrentValue}</span>
+      </div>
     </div>
   )
 }

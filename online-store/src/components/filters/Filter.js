@@ -1,13 +1,13 @@
 const Filter = ({namOfCategory, isChecked, handleChangeBrand}) => {
   return (
-    <label>
+    <label className=''>
       <input
         type="checkbox"
         checked={isChecked}
         value={namOfCategory}
         onChange={(e) => handleChangeBrand(e)}
       />
-      {namOfCategory}
+      <span>{namOfCategory}</span>
     </label>
   )
 }
