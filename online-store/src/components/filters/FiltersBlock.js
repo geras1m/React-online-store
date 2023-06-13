@@ -11,11 +11,11 @@ import {
   updateMinValueRangeSliderStock
 } from "../../slices/productSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {nameOfCopyBtn, typeOfCategory} from "../../const/const";
+import {nameOfCopyBtn, typeOfCategory, typesOfSort} from "../../const/const";
 import {Button} from "react-bootstrap";
 import './FiltersBlock.scss';
 import {useSearchParams} from "react-router-dom";
-import {isSubstringInStringInPropertyOfObject} from "../../utils/utils";
+import {getSortedArray, isSubstringInStringInPropertyOfObject} from "../../utils/utils";
 
 const FiltersBlock = () => {
   const dispatch = useDispatch();
@@ -33,8 +33,11 @@ const FiltersBlock = () => {
     checkedMinFilterStock,
     checkedMaxFilterStock,
     searchInputValue,
+    typeOfSorting,
   } = useSelector(state => state.products);
 
+
+  // Вынести функцию снизу в утилиты
   const checkEveryPositionInProductOnConditionFromFilters = (elem) => {
     let isBrand = true;
     let isCategory = true;
@@ -66,6 +69,7 @@ const FiltersBlock = () => {
         !isSubstringInStringInPropertyOfObject(elem, 'category', searchInputValue) ||
         !isSubstringInStringInPropertyOfObject(elem, 'brand', searchInputValue)
     }
+
     return isBrand && isCategory && isPrice && isStock && isSearch
   }
 
@@ -80,13 +84,17 @@ const FiltersBlock = () => {
       checkedMaxFilterStock === minAndMaxValueOfStock[1] &&
       searchInputValue.length === 0
     ) {
-      dispatch(filterProducts(products));
+      const sortedProducts = getSortedArray(products, typeOfSorting);
+
+      dispatch(filterProducts(sortedProducts));
       return;
     }
 
     filtered = products.filter(product => checkEveryPositionInProductOnConditionFromFilters(product));
 
-    dispatch(filterProducts(filtered));
+    const sortedAndFilteredProducts = getSortedArray(filtered, typeOfSorting);
+
+    dispatch(filterProducts(sortedAndFilteredProducts));
   };
 
   useEffect(() => {
@@ -99,7 +107,8 @@ const FiltersBlock = () => {
     checkedMaxFilterPrice,
     checkedMinFilterStock,
     checkedMaxFilterStock,
-    searchInputValue
+    searchInputValue,
+    typeOfSorting
   ]);
 
   const handleResetAllFilters = () => {

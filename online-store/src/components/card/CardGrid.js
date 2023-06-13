@@ -1,11 +1,8 @@
 import Button from "react-bootstrap/Button";
 import './Card.scss';
+import {getRoundCountWithDiscount} from "../../utils/utils";
 
-export const getRoundCountWithDiscount = (price, discount) => {
-  return (+price - +price * (+discount / 100)).toFixed(2)
-}
-
-const Card = ({
+const CardGrid = ({
                 title,
                 price,
                 discountPercentage,
@@ -16,13 +13,13 @@ const Card = ({
                 thumbnail}) => {
 
   return (
-    <div className="card">
+    <div className="card-grid ">
       <div
-        className='card__wrapper-img'
+        className='card-grid__wrapper-img'
         style={{background: `url(${thumbnail}) 0% 0% / cover`}}>
       </div>
-      <h4 className='card__title'>{title}</h4>
-      <div className='card__text'>
+      <h4 className='card-grid__title'>{title}</h4>
+      <div className='card-grid__text'>
         <ul>
           <li>Category: {category}</li>
           <li>Brand: {brand}</li>
@@ -33,12 +30,12 @@ const Card = ({
         </ul>
         <span>Total cost: <span className='sum'>{getRoundCountWithDiscount(price, discountPercentage)}$</span></span>
       </div>
-      <div className='card__wrapper-btns'>
-        <Button variant="primary">Drop from cart</Button>
+      <div className='card-grid__wrapper-btns'>
+        <Button variant="primary">Add to cart</Button>
         <Button variant="primary">Details</Button>
       </div>
     </div>
   )
 }
 
-export default Card;
+export default CardGrid;

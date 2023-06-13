@@ -15,7 +15,8 @@ const initialState = ({
   checkedMinFilterStock: null,
   checkedMaxFilterStock: null,
   searchInputValue: '',
-  typeOfSorting: 'default',
+  typeOfSorting: '',
+  viewOfCards: null
 });
 
 export const fetchProducts = createAsyncThunk(
@@ -65,8 +66,9 @@ const productsSlice = createSlice({
       state.checkedMaxFilterPrice = state.minAndMaxValueOfPrice[1];
       state.checkedMinFilterStock = state.minAndMaxValueOfStock[0];
       state.checkedMaxFilterStock = state.minAndMaxValueOfStock[1];
-      state.typeOfSorting = 'default';
+      state.typeOfSorting = '';
       state.searchInputValue = '';
+      state.viewOfCards = null;
     },
     updateTypeOfSorting(state, action){
       state.typeOfSorting = action.payload;
@@ -74,6 +76,9 @@ const productsSlice = createSlice({
     updateSearchInputValue(state, action){
       state.searchInputValue = action.payload;
     } ,
+    changeTypeOfCardsView(state, action){
+      state.viewOfCards = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -105,6 +110,7 @@ export const {
   resetAllFilters,
   updateTypeOfSorting,
   updateSearchInputValue,
+  changeTypeOfCardsView,
 } = productsSlice.actions;
 export default productsSlice.reducer;
 
