@@ -11,7 +11,7 @@ const CardGrid = ({
                 brand,
                 category,
                 thumbnail}) => {
-
+const count = getRoundCountWithDiscount(price, discountPercentage);
   return (
     <div className="card-grid ">
       <div
@@ -28,7 +28,7 @@ const CardGrid = ({
           <li>Price: {price}$</li>
           <li>Discount: {discountPercentage}%</li>
         </ul>
-        <span>Total cost: <span className='sum'>{getRoundCountWithDiscount(price, discountPercentage)}$</span></span>
+        <span>Total cost: <span className='sum'>{count}$</span></span>
       </div>
       <div className='card-grid__wrapper-btns'>
         <Button variant="primary">Add to cart</Button>

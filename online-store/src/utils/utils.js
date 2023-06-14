@@ -39,3 +39,5 @@ export const getSortedArray = (array, typeOfSorting) => {
   }
   return sortedProducts;
 }
+
+

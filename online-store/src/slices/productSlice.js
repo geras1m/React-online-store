@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {useHttp} from "../hooks/http.hooks";
 
-// поместить в массив мин и мах цену и склад
 const initialState = ({
   products: [],
   filteredProducts: [],
@@ -9,11 +8,9 @@ const initialState = ({
   checkedFilterCategory: [],
   checkedFilterBrand: [],
   minAndMaxValueOfPrice: [],
-  checkedMinFilterPrice: null,
-  checkedMaxFilterPrice: null,
+  checkedMinAndMaxFilteredPrice: [0,0],
   minAndMaxValueOfStock: [],
-  checkedMinFilterStock: null,
-  checkedMaxFilterStock: null,
+  checkedMinAndMaxFilteredStock: [0,0],
   searchInputValue: '',
   typeOfSorting: '',
   viewOfCards: null
@@ -41,31 +38,26 @@ const productsSlice = createSlice({
     updateCheckedFilterBrand(state, action) {
       state.checkedFilterBrand = action.payload;
     },
+
     setMinAndMaxValueRangeSliderPrice(state, action) {
       state.minAndMaxValueOfPrice = action.payload;
     },
-    updateMinValueRangeSliderPrice(state, action) {
-      state.checkedMinFilterPrice = action.payload;
+    updateMinAndMaxValueRangeSliderPrice(state, action){
+      state.checkedMinAndMaxFilteredPrice = action.payload;
     },
-    updateMaxValueRangeSliderPrice(state, action) {
-      state.checkedMaxFilterPrice = action.payload;
-    },
+
     setMinAndMaxValueRangeSliderStock(state, action) {
       state.minAndMaxValueOfStock = action.payload;
     },
-    updateMinValueRangeSliderStock(state, action) {
-      state.checkedMinFilterStock = action.payload;
+    updateMinAndMaxValueRangeSliderStock(state, action){
+      state.checkedMinAndMaxFilteredStock = action.payload;
     },
-    updateMaxValueRangeSliderStock(state, action) {
-      state.checkedMaxFilterStock = action.payload;
-    },
+
     resetAllFilters(state) {
       state.checkedFilterCategory = [];
       state.checkedFilterBrand = [];
-      state.checkedMinFilterPrice = state.minAndMaxValueOfPrice[0];
-      state.checkedMaxFilterPrice = state.minAndMaxValueOfPrice[1];
-      state.checkedMinFilterStock = state.minAndMaxValueOfStock[0];
-      state.checkedMaxFilterStock = state.minAndMaxValueOfStock[1];
+      state.checkedMinAndMaxFilteredPrice = state.minAndMaxValueOfPrice;
+      state.checkedMinAndMaxFilteredStock = state.minAndMaxValueOfStock;
       state.typeOfSorting = '';
       state.searchInputValue = '';
       state.viewOfCards = null;
@@ -102,15 +94,14 @@ export const {
   updateCheckedFilterCategory,
   updateCheckedFilterBrand,
   setMinAndMaxValueRangeSliderPrice,
-  updateMinValueRangeSliderPrice,
-  updateMaxValueRangeSliderPrice,
+  updateMinAndMaxValueRangeSliderPrice,
   setMinAndMaxValueRangeSliderStock,
-  updateMinValueRangeSliderStock,
-  updateMaxValueRangeSliderStock,
+  updateMinAndMaxValueRangeSliderStock,
   resetAllFilters,
   updateTypeOfSorting,
   updateSearchInputValue,
   changeTypeOfCardsView,
+
 } = productsSlice.actions;
 export default productsSlice.reducer;
 

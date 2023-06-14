@@ -1,0 +1,19 @@
+.btns-wrapper {
+  width: 80px;
+  display: flex;
+  justify-content: space-between;
+
+  &__btn-view {
+    border: none;
+  }
+
+  &__icon-grid {
+    width: 30px;
+    height: 30px;
+    transition: .1s ease-in;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

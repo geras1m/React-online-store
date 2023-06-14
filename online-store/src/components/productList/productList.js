@@ -10,11 +10,7 @@ import {typeOfView} from "../../const/const";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const {
-    filteredProducts,
-    productsLoadingStatus,
-    viewOfCards
-  } = useSelector(state => state.products);
+  const {filteredProducts, productsLoadingStatus, viewOfCards} = useSelector(state => state.products);
   const [classOfView, setClassOfView] = useState('product-list__wrapper-card-grid');
 
   useEffect(() => {
@@ -29,8 +25,19 @@ const ProductList = () => {
     }
   }, [viewOfCards]);
 
-// доавлять на этом этапе разные классы для отрисовки разной плитки
   const renderProductList = (arr) => {
+    if (productsLoadingStatus === 'loading') {
+      return (
+        <Spinner className='product-list__spinner' animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      )
+    } else if (productsLoadingStatus === "error") {
+      return <h5 className="message">Loading error</h5>
+    } else if (filteredProducts.length < 1) {
+      return <h5 className="message">No products found</h5>
+    }
+
     if (viewOfCards === typeOfView.line) {
       return arr.map(({id, ...props}) => {
         return <CardLine key={id}{...props}/>
@@ -41,18 +48,6 @@ const ProductList = () => {
       })
     }
   };
-
-  if (productsLoadingStatus === 'loading') {
-    return (
-      <Spinner className='product-list__spinner' animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    )
-  } else if (productsLoadingStatus === "error") {
-    return <h5 className="text-center mt-5">Loading error</h5>
-  } else if (filteredProducts.length < 1) {
-    return <h5 className="text-center mt-5">No products found</h5>
-  }
 
   const productElements = renderProductList(filteredProducts);
 

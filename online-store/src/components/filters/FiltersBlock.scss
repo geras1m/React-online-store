@@ -16,6 +16,8 @@
   }
 
   &__wrapper-category {
+    display: flex;
+    flex-direction: column;
     height: 260px;
     overflow-y: scroll;
   }

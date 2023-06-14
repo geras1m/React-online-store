@@ -6,9 +6,15 @@ import Range from "rc-slider";
 import 'rc-slider/assets/index.css';
 import './SliderRangeDual.scss';
 
-const SliderRangeDual = ({title, step, typeOfCategory, setMinAndMaxLimitOfValueRangeSliderInState, updateMinValueRangeSliderInState, updateMaxValueRangeSliderInState}) => {
+const SliderRangeDual = ({
+                           title,
+                           step,
+                           typeOfCategory,
+                           setMinAndMaxLimitOfValueRangeSliderInState,
+                           updateMinAndMaxValueRangeSliderInState
+}) => {
   const dispatch = useDispatch();
-  const {products} = useSelector(state => state.products);
+  const {products, productsLoadingStatus} = useSelector(state => state.products);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const urlSearchParams = searchParams.get(typeOfCategory);
@@ -20,20 +26,19 @@ const SliderRangeDual = ({title, step, typeOfCategory, setMinAndMaxLimitOfValueR
   useEffect(() => {
     let value = urlSearchParams ? minAndMaxValueFromUrlSearchParams : minAndMaxValueFromAllProducts;
     dispatch(setMinAndMaxLimitOfValueRangeSliderInState(minAndMaxValueFromAllProducts))
-    dispatch(updateMinValueRangeSliderInState(value[0]));
-    dispatch(updateMaxValueRangeSliderInState(value[1]));
+    dispatch(updateMinAndMaxValueRangeSliderInState(value));
   }, [products]);
 
   const handleChangePrice = (value) => {
     searchParams.set(typeOfCategory, value.join('to'));
     setSearchParams(searchParams);
 
-    dispatch(updateMinValueRangeSliderInState(value[0]));
-    dispatch(updateMaxValueRangeSliderInState(value[1]));
+    dispatch(updateMinAndMaxValueRangeSliderInState(value));
   };
 
-  const minCurrentValue = urlSearchParams ? minAndMaxValueFromUrlSearchParams[0] : minAndMaxValueFromAllProducts[0];
-  const maxCurrentValue = urlSearchParams ? minAndMaxValueFromUrlSearchParams[1] : minAndMaxValueFromAllProducts[1];
+  const currentValue = urlSearchParams ? minAndMaxValueFromUrlSearchParams : minAndMaxValueFromAllProducts;
+
+  //Сделать спинер
 
   return (
     <div>
@@ -45,13 +50,13 @@ const SliderRangeDual = ({title, step, typeOfCategory, setMinAndMaxLimitOfValueR
         min={minAndMaxValueFromAllProducts[0]}
         max={minAndMaxValueFromAllProducts[1]}
         step={step}
-        value={[minCurrentValue, maxCurrentValue]}
+        value={currentValue}
         allowCross={false}
         trackStyle={{backgroundColor: "black"}}
       />
       <div
         className='range-slider__marks'>
-        <span>{minCurrentValue}</span><span>{maxCurrentValue}</span>
+        <span>{currentValue[0]}</span><span>{currentValue[1]}</span>
       </div>
     </div>
   )

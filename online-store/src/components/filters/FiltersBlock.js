@@ -2,16 +2,17 @@ import FilterByCategory from "./FilterByCategory";
 import SliderRangeDual from "./SliderRangeDual";
 import {useEffect, useState} from "react";
 import {
-  filterProducts, resetAllFilters, setMinAndMaxValueRangeSliderPrice, setMinAndMaxValueRangeSliderStock,
+  filterProducts,
+  resetAllFilters,
+  setMinAndMaxValueRangeSliderPrice,
+  setMinAndMaxValueRangeSliderStock,
   updateCheckedFilterBrand,
   updateCheckedFilterCategory,
-  updateMaxValueRangeSliderPrice,
-  updateMaxValueRangeSliderStock,
-  updateMinValueRangeSliderPrice,
-  updateMinValueRangeSliderStock
+  updateMinAndMaxValueRangeSliderPrice,
+  updateMinAndMaxValueRangeSliderStock,
 } from "../../slices/productSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {nameOfCopyBtn, typeOfCategory, typesOfSort} from "../../const/const";
+import {nameOfCopyBtn, typeOfCategory} from "../../const/const";
 import {Button} from "react-bootstrap";
 import './FiltersBlock.scss';
 import {useSearchParams} from "react-router-dom";
@@ -27,17 +28,13 @@ const FiltersBlock = () => {
     checkedFilterCategory,
     checkedFilterBrand,
     minAndMaxValueOfPrice,
-    checkedMinFilterPrice,
-    checkedMaxFilterPrice,
+    checkedMinAndMaxFilteredPrice,
     minAndMaxValueOfStock,
-    checkedMinFilterStock,
-    checkedMaxFilterStock,
+    checkedMinAndMaxFilteredStock,
     searchInputValue,
     typeOfSorting,
   } = useSelector(state => state.products);
 
-
-  // Вынести функцию снизу в утилиты
   const checkEveryPositionInProductOnConditionFromFilters = (elem) => {
     let isBrand = true;
     let isCategory = true;
@@ -52,18 +49,18 @@ const FiltersBlock = () => {
       isCategory = checkedFilterCategory.includes(elem.category)
     }
     if (
-      checkedMinFilterPrice !== minAndMaxValueOfPrice[0] ||
-      checkedMaxFilterPrice !== minAndMaxValueOfPrice[1]
+      checkedMinAndMaxFilteredPrice[0] !== minAndMaxValueOfPrice[0] ||
+      checkedMinAndMaxFilteredPrice[1] !== minAndMaxValueOfPrice[1]
     ) {
-      isPrice = elem.price >= checkedMinFilterPrice && elem.price <= checkedMaxFilterPrice
+      isPrice = elem.price >= checkedMinAndMaxFilteredPrice[0] && elem.price <= checkedMinAndMaxFilteredPrice[1]
     }
     if (
-      checkedMinFilterStock !== minAndMaxValueOfStock[0] ||
-      checkedMaxFilterStock !== minAndMaxValueOfStock[1]
+      checkedMinAndMaxFilteredStock[0] !== minAndMaxValueOfStock[0] ||
+      checkedMinAndMaxFilteredStock[1] !== minAndMaxValueOfStock[1]
     ) {
-      isStock = elem.stock >= checkedMinFilterStock && elem.stock <= checkedMaxFilterStock
+      isStock = elem.stock >= checkedMinAndMaxFilteredStock[0] && elem.stock <= checkedMinAndMaxFilteredStock[1]
     }
-    if (searchInputValue.length !== 0){
+    if (searchInputValue.length !== 0) {
       isSearch = !isSubstringInStringInPropertyOfObject(elem, 'title', searchInputValue) ||
         !isSubstringInStringInPropertyOfObject(elem, 'description', searchInputValue) ||
         !isSubstringInStringInPropertyOfObject(elem, 'category', searchInputValue) ||
@@ -78,10 +75,10 @@ const FiltersBlock = () => {
     if (
       checkedFilterBrand.length === 0 &&
       checkedFilterCategory.length === 0 &&
-      checkedMinFilterPrice === minAndMaxValueOfPrice[0] &&
-      checkedMaxFilterPrice === minAndMaxValueOfPrice[1] &&
-      checkedMinFilterStock === minAndMaxValueOfStock[0] &&
-      checkedMaxFilterStock === minAndMaxValueOfStock[1] &&
+      checkedMinAndMaxFilteredPrice[0] === minAndMaxValueOfPrice[0] &&
+      checkedMinAndMaxFilteredPrice[1] === minAndMaxValueOfPrice[1] &&
+      checkedMinAndMaxFilteredStock[0] === minAndMaxValueOfStock[0] &&
+      checkedMinAndMaxFilteredStock[1] === minAndMaxValueOfStock[1] &&
       searchInputValue.length === 0
     ) {
       const sortedProducts = getSortedArray(products, typeOfSorting);
@@ -103,10 +100,8 @@ const FiltersBlock = () => {
     products,
     checkedFilterCategory,
     checkedFilterBrand,
-    checkedMinFilterPrice,
-    checkedMaxFilterPrice,
-    checkedMinFilterStock,
-    checkedMaxFilterStock,
+    checkedMinAndMaxFilteredPrice,
+    checkedMinAndMaxFilteredStock,
     searchInputValue,
     typeOfSorting
   ]);
@@ -124,14 +119,16 @@ const FiltersBlock = () => {
   };
 
   useEffect(() => {
-    if (textInCopyBtn === nameOfCopyBtn.copied){
+    if (textInCopyBtn === nameOfCopyBtn.copied) {
       setTimeout(() => {
         setTextInCopyBtn(nameOfCopyBtn.default);
         setBackgroundCopyBtn('')
-      },2000);
+      }, 2000);
 
     }
-  },[textInCopyBtn])
+  }, [textInCopyBtn]);
+
+  // Вынести блок с кнопками сброса фильтров и копирования url в отдельный компонент
 
   return (
     <div className='filters'>
@@ -172,8 +169,7 @@ const FiltersBlock = () => {
           step={10}
           typeOfCategory={typeOfCategory.price}
           setMinAndMaxLimitOfValueRangeSliderInState={setMinAndMaxValueRangeSliderPrice}
-          updateMinValueRangeSliderInState={updateMinValueRangeSliderPrice}
-          updateMaxValueRangeSliderInState={updateMaxValueRangeSliderPrice}
+          updateMinAndMaxValueRangeSliderInState={updateMinAndMaxValueRangeSliderPrice}
         />
       </div>
       <div>
@@ -182,8 +178,7 @@ const FiltersBlock = () => {
           step={1}
           typeOfCategory={typeOfCategory.stock}
           setMinAndMaxLimitOfValueRangeSliderInState={setMinAndMaxValueRangeSliderStock}
-          updateMinValueRangeSliderInState={updateMinValueRangeSliderStock}
-          updateMaxValueRangeSliderInState={updateMaxValueRangeSliderStock}
+          updateMinAndMaxValueRangeSliderInState={updateMinAndMaxValueRangeSliderStock}
         />
       </div>
     </div>
