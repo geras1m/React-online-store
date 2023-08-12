@@ -20,8 +20,10 @@ const SortingSelector = () => {
   }, []);
 
   useEffect(() => {
-    searchParams.set(typesOfSort.urlName, typeOfSorting);
-    setSearchParams(searchParams);
+    if(typeOfSorting !== ''){
+      searchParams.set(typesOfSort.urlName, typeOfSorting);
+      setSearchParams(searchParams);
+    }
   }, [typeOfSorting]);
 
   const handleChooseTypeOfSorting = (e) => {

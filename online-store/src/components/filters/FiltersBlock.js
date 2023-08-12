@@ -1,9 +1,8 @@
 import FilterByCategory from "./FilterByCategory";
 import SliderRangeDual from "./SliderRangeDual";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {
   filterProducts,
-  resetAllFilters,
   setMinAndMaxValueRangeSliderPrice,
   setMinAndMaxValueRangeSliderStock,
   updateCheckedFilterBrand,
@@ -12,17 +11,15 @@ import {
   updateMinAndMaxValueRangeSliderStock,
 } from "../../slices/productSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {nameOfCopyBtn, typeOfCategory} from "../../const/const";
-import {Button} from "react-bootstrap";
+import {typeOfCategory} from "../../const/const";
 import './FiltersBlock.scss';
-import {useSearchParams} from "react-router-dom";
 import {getSortedArray, isSubstringInStringInPropertyOfObject} from "../../utils/utils";
+import BtnForCopyingUrl from "../btnForCopyingUrl/BtnForCopyingUrl";
+import BtnForResettingFilters from "../btnForResettingFilters/btnForResettingFilters";
 
 const FiltersBlock = () => {
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [textInCopyBtn, setTextInCopyBtn] = useState(nameOfCopyBtn.default);
-  const [backgroundCopyBtn, setBackgroundCopyBtn] = useState(null);
+
   const {
     products,
     checkedFilterCategory,
@@ -32,10 +29,10 @@ const FiltersBlock = () => {
     minAndMaxValueOfStock,
     checkedMinAndMaxFilteredStock,
     searchInputValue,
-    typeOfSorting,
+    typeOfSorting
   } = useSelector(state => state.products);
 
-  const checkEveryPositionInProductOnConditionFromFilters = (elem) => {
+  const checkProductBySelectedFilters = (elem) => {
     let isBrand = true;
     let isCategory = true;
     let isPrice = true;
@@ -70,7 +67,7 @@ const FiltersBlock = () => {
     return isBrand && isCategory && isPrice && isStock && isSearch
   }
 
-  const dispatchFilterProducts = () => {
+  const dispatchFilteredAndSortedProducts = () => {
     let filtered;
     if (
       checkedFilterBrand.length === 0 &&
@@ -82,20 +79,16 @@ const FiltersBlock = () => {
       searchInputValue.length === 0
     ) {
       const sortedProducts = getSortedArray(products, typeOfSorting);
-
       dispatch(filterProducts(sortedProducts));
-      return;
+    } else {
+      filtered = products.filter(product => checkProductBySelectedFilters(product));
+      const sortedAndFilteredProducts = getSortedArray(filtered, typeOfSorting);
+      dispatch(filterProducts(sortedAndFilteredProducts));
     }
-
-    filtered = products.filter(product => checkEveryPositionInProductOnConditionFromFilters(product));
-
-    const sortedAndFilteredProducts = getSortedArray(filtered, typeOfSorting);
-
-    dispatch(filterProducts(sortedAndFilteredProducts));
   };
 
   useEffect(() => {
-    dispatchFilterProducts()
+    dispatchFilteredAndSortedProducts()
   }, [
     products,
     checkedFilterCategory,
@@ -106,44 +99,11 @@ const FiltersBlock = () => {
     typeOfSorting
   ]);
 
-  const handleResetAllFilters = () => {
-    setSearchParams({});
-    dispatch(resetAllFilters());
-  };
-
-  const handleCopyUrl = () => {
-    const currentUrl = window.location.href;
-    navigator.clipboard.writeText(currentUrl);
-    setTextInCopyBtn(nameOfCopyBtn.copied);
-    setBackgroundCopyBtn('green-bckg')
-  };
-
-  useEffect(() => {
-    if (textInCopyBtn === nameOfCopyBtn.copied) {
-      setTimeout(() => {
-        setTextInCopyBtn(nameOfCopyBtn.default);
-        setBackgroundCopyBtn('')
-      }, 2000);
-
-    }
-  }, [textInCopyBtn]);
-
-  // Вынести блок с кнопками сброса фильтров и копирования url в отдельный компонент
-
   return (
     <div className='filters'>
       <div className={'filters__wrapper-btns'}>
-        <Button
-          className={backgroundCopyBtn}
-          variant="dark"
-          size='sm'
-          onClick={handleCopyUrl}
-        >{textInCopyBtn}</Button>
-        <Button
-          variant="dark"
-          size='sm'
-          onClick={handleResetAllFilters}
-        >Reset filters</Button>
+        <BtnForCopyingUrl/>
+        <BtnForResettingFilters/>
       </div>
       <div>
         <div>

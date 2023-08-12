@@ -13,7 +13,7 @@ const initialState = ({
   checkedMinAndMaxFilteredStock: [0,0],
   searchInputValue: '',
   typeOfSorting: '',
-  viewOfCards: null
+  viewOfCards: null,
 });
 
 export const fetchProducts = createAsyncThunk(

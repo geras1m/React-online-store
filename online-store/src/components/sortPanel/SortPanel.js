@@ -7,10 +7,6 @@ import ViewButtons from "./viewButtnons/viewButtons";
 const SortPanel = () => {
   const {filteredProducts} = useSelector(state => state.products);
 
-  // поработать с линтером (установить, настроить)
-
-  // разбить на компоненты, переписать значения цены и склада в сторе на массив, сделать отображение
-
   return (
     <div className='view-panel'>
       <SortingSelector/>

@@ -58,4 +58,7 @@ export const nameOfCopyBtn = {
   'copied': 'Сopied !'
 }
 
+export const colorCrimson = '#ed143d';
+export const colorBlack = 'black';
+
 
